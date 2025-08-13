@@ -1,12 +1,13 @@
-const express = require('express'); 
-const router = express.Router();
-const { getUsers,getUser }=require("../controller/user");
+import express from 'express';
+import { getUsers, getUser } from '../controller/user.js';
+import { getAllMessages, addMessage, getLatestMessage } from '../controller/messages.js';
 
-const { getAllMessages, addMessage,getlatestMessage }=require("../controller/messages");
+const router = express.Router();
 
 router.get("/users", getUsers);
-router.get("/messages/:wa_id", getAllMessages);
 router.get("/users/:wa_id", getUser);
+router.get("/messages/:wa_id", getAllMessages);
+router.get("/messages/latest/:wa_id", getLatestMessage);
 router.post("/addmessage", addMessage);
-router.get("/messages/latest/:wa_id", getlatestMessage);
-module.exports = router;
+
+export default router;

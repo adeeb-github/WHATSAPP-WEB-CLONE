@@ -1,17 +1,17 @@
-const Message=require('../models/message');
-const { v4: uuidv4 } = require('uuid');
-exports.getAllMessages=async(req,res)=>{
-    try {
+import Message from '../models/message.js';
+import { v4 as uuidv4 } from 'uuid';
+
+export const getAllMessages = async (req, res) => {
+  try {
     const messages = await Message.find({ wa_id: req.params.wa_id }).sort({ timestamp: 1 });
     res.json({ success: true, data: messages });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
   }
+};
 
-}
-
-exports.addMessage = async (req, res) => {
+export const addMessage = async (req, res) => {
   try {
     const { wa_id, text, from, timestamp } = req.body;
 
@@ -19,6 +19,7 @@ exports.addMessage = async (req, res) => {
     if (!wa_id || !text || !from || !timestamp) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
+
     const date = new Date(timestamp);
     if (isNaN(date)) {
       return res.status(400).json({ success: false, message: "Invalid timestamp format" });
@@ -38,17 +39,18 @@ exports.addMessage = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: newMessage
+      data: newMessage,
     });
   } catch (error) {
     console.error("Error adding message:", error);
     res.status(500).json({
       success: false,
-      message: "Server error while adding message"
+      message: "Server error while adding message",
     });
   }
 };
-exports.getlatestMessage=async(req,res)=>{
+
+export const getLatestMessage = async (req, res) => {
   try {
     const message = await Message.findOne({ wa_id: req.params.wa_id }).sort({ timestamp: -1 });
     res.json({ success: true, data: message });
@@ -56,4 +58,4 @@ exports.getlatestMessage=async(req,res)=>{
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
   }
-}
+};

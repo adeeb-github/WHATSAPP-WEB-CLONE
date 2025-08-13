@@ -1,15 +1,20 @@
-const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
-const cors = require('cors');
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
+
+import {processWebhookData} from './utils/processWebhook.js';
+import db from './config/db.js';
+import userRoutes from './routes/userRoute.js';
+
+dotenv.config();
 
 const app = express();
 
-const processWebhookData = require("./utils/processWebhook").processWebhookData;
-const db = require('./config/db');
-const userRoutes = require('./routes/userRoute');
-
+// Connect to database
 db.connect();
+
+// Middleware
 app.use(express.json());
 
 processWebhookData();
@@ -20,10 +25,10 @@ app.use(cors({
   credentials: true
 }));
 
-
-
+// Routes
 app.use("/api", userRoutes);
 
+// Root endpoint
 app.get("/", (req, res) => {
   return res.json({
     success: true,
